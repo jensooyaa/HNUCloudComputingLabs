@@ -4,8 +4,6 @@
 
 <！——**这是包含湖南大学本科课程CS06142“云计算技术”所有实验材料的仓库**——>
 
-赢麻了test1234
-
 ## 1. Overview
 
 There are **4 labs in total** in this course. All the materials of each lab are under folders Lab1-4 in this repo. Please clone the lab git repo onto your local computer,
