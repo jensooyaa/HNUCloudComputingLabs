@@ -5,16 +5,15 @@
 
 #include "sudoku.h"
 
-static bool occupied[N][NUM+1];
+static bool occupied[N][NUM + 1];
 static int arity[N];
 
-static void find_min_arity(int space)
-{
+static void find_min_arity(int space) {
   int cell = spaces[space];
   int min_space = space;
   int min_arity = arity[cell];
 
-  for (int sp = space+1; sp < nspaces && min_arity > 1; ++sp) {
+  for (int sp = space + 1; sp < nspaces && min_arity > 1; ++sp) {
     int cur_arity = arity[spaces[sp]];
     if (cur_arity < min_arity) {
       min_arity = cur_arity;
@@ -27,10 +26,10 @@ static void find_min_arity(int space)
   }
 }
 
-void init_cache()
-{
+void init_cache() {
   bzero(occupied, sizeof(occupied));
-  std::fill(arity, arity + N, NUM);
+  std::fill(arity, arity + N, NUM); // 数组arity[81]填9
+
   for (int cell = 0; cell < N; ++cell) {
     occupied[cell][0] = true;
     int val = board[cell];
@@ -47,8 +46,7 @@ void init_cache()
   }
 }
 
-bool solve_sudoku_min_arity_cache(int which_space)
-{
+bool solve_sudoku_min_arity_cache(int which_space) {
   if (which_space >= nspaces) {
     return true;
   }
@@ -76,7 +74,7 @@ bool solve_sudoku_min_arity_cache(int which_space)
       }
 
       // try
-      if (solve_sudoku_min_arity_cache(which_space+1)) {
+      if (solve_sudoku_min_arity_cache(which_space + 1)) {
         return true;
       }
 
