@@ -1,5 +1,6 @@
 #!/bin/bash 
-#~/test_data/advanced_test  (include test1 test1000)
+# ~/test_data/advanced_test  (include test1 test1000)
+# set -x
 if [ $# != 2 ] ; then 
 echo "参数数量不对" 
 echo "参数1:包含测试文件组的文件 例如 \"test_group\"  (其中可能包含 ./test1 ./test1000) " 
@@ -10,7 +11,7 @@ fi
 
 test_data_txt=$1
 answer_date_txt=$2
-GROUP_NAME="group1"
+GROUP_NAME="赢麻了小组"
 Current_Folder=$(cd `dirname $0`; pwd)
 Record_Time="${test_data_txt}_Folder/Record_Time.csv"
 Error_Teams="${test_data_txt}_Folder/Error_Teams.csv"
@@ -36,6 +37,9 @@ Cul_Run_Time(){
 	string=$(pwd)  
 	array=(${string//\// })  
 	root_Directory=${array[0]};
+  
+  # 文件所存在的磁盘
+  root_Directory="/dev/sda5"
 
 	DISK=$(df -h |grep ${root_Directory} |awk '{print $1}')
 
@@ -131,7 +135,7 @@ Basic_Test(){
 		cat ${Current_Folder}/${answer_data} >> ${Current_Folder}/${Answer}
 	done < $3
 
-	sleep 30
+	sleep 5
 	screen -S $1 -X stuff "^C^M"
 	screen -S $1 -X quit
 
@@ -200,7 +204,7 @@ Advanced_Test(){
 		cat ${Current_Folder}/${answer_data} >> ${Current_Folder}/${Answer}
 	done < $3
 
-	sleep 30
+	sleep 5
 	screen -S $1 -X stuff "^C^M"
 	screen -S $1 -X quit
 
