@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 #~/test_data/advanced_test  (include test1 test1000)
 if [ $# != 2 ] ; then 
 echo "参数数量不对" 
