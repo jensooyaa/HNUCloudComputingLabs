@@ -230,7 +230,7 @@ struct Dance {
   }
 };
 
-bool solve_sudoku_dancing_links(int unused) {
+bool solve_sudoku_dancing_links(int *board) {
   Dance d(board);
   return d.solve();
 }
