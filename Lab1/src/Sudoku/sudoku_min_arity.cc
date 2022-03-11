@@ -4,23 +4,21 @@
 
 #include "sudoku.h"
 
-static int arity(int cell)
-{
+static int arity(int cell) {
   bool occupied[10] = {false};
   for (int i = 0; i < NEIGHBOR; ++i) {
     int neighbor = neighbors[cell][i];
     occupied[board[neighbor]] = true;
   }
-  return std::count(occupied+1, occupied+10, false);
+  return std::count(occupied + 1, occupied + 10, false);
 }
 
-static void find_min_arity(int space)
-{
+static void find_min_arity(int space) {
   int cell = spaces[space];
   int min_space = space;
   int min_arity = arity(cell);
 
-  for (int sp = space+1; sp < nspaces && min_arity > 1; ++sp) {
+  for (int sp = space + 1; sp < nspaces && min_arity > 1; ++sp) {
     int cur_arity = arity(spaces[sp]);
     if (cur_arity < min_arity) {
       min_arity = cur_arity;
@@ -33,8 +31,7 @@ static void find_min_arity(int space)
   }
 }
 
-bool solve_sudoku_min_arity(int which_space)
-{
+bool solve_sudoku_min_arity(int which_space) {
   if (which_space >= nspaces) {
     return true;
   }
@@ -49,7 +46,7 @@ bool solve_sudoku_min_arity(int which_space)
       board[cell] = guess;
 
       // try
-      if (solve_sudoku_min_arity(which_space+1)) {
+      if (solve_sudoku_min_arity(which_space + 1)) {
         return true;
       }
 

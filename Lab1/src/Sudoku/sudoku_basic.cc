@@ -10,8 +10,7 @@ int spaces[N];
 int nspaces;
 int (*chess)[COL] = (int (*)[COL])board;
 
-static void find_spaces()
-{
+static void find_spaces() { // 记录board中0的位置(0-80)
   nspaces = 0;
   for (int cell = 0; cell < N; ++cell) {
     if (board[cell] == 0)
@@ -19,8 +18,7 @@ static void find_spaces()
   }
 }
 
-void input(const char in[N])
-{
+void input(const char in[N]) { // 将输入的字符输入到board数组中
   for (int cell = 0; cell < N; ++cell) {
     board[cell] = in[cell] - '0';
     assert(0 <= board[cell] && board[cell] <= NUM);
@@ -28,8 +26,7 @@ void input(const char in[N])
   find_spaces();
 }
 
-bool available(int guess, int cell)
-{
+bool available(int guess, int cell) {
   for (int i = 0; i < NEIGHBOR; ++i) {
     int neighbor = neighbors[cell][i];
     if (board[neighbor] == guess) {
@@ -39,8 +36,7 @@ bool available(int guess, int cell)
   return true;
 }
 
-bool solve_sudoku_basic(int which_space)
-{
+bool solve_sudoku_basic(int which_space) {
   if (which_space >= nspaces) {
     return true;
   }
@@ -49,13 +45,13 @@ bool solve_sudoku_basic(int which_space)
   int cell = spaces[which_space];
 
   for (int guess = 1; guess <= NUM; ++guess) {
-    if (available(guess, cell)) {
+    if (available(guess, cell)) { // 判断1-9是否能填入这个cell
       // hold
       assert(board[cell] == 0);
       board[cell] = guess;
 
       // try
-      if (solve_sudoku_basic(which_space+1)) {
+      if (solve_sudoku_basic(which_space + 1)) {
         return true;
       }
 
