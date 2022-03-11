@@ -38,7 +38,7 @@ void trans(char in[N], int *target) {
 void file_handle(string file_name) {
   ifstream input_file(file_name, ios::in);
 
-  std::vector<std::future<int>> results;
+  vector<future<int>> results;
   bool end_of_file = false;
   while (!end_of_file) {
     // 按块来取数据
