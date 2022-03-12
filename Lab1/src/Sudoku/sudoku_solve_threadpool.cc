@@ -2,6 +2,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <stdio.h>
 #include <string>
 #include <thread>
 
@@ -66,8 +67,8 @@ void file_handle(string file_name) {
     // 输出数据到文件中
     for (int i = 0; i < line_count; i++) {
       for (int j = 0; j < N; j++)
-        cout << puzzle_buf[i][j];
-      cout << '\n';
+        putchar('0' + puzzle_buf[i][j]);
+      putchar('\n');
     }
   }
   input_file.close();
