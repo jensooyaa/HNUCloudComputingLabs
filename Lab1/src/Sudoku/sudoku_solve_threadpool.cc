@@ -8,64 +8,51 @@
 
 #include "sudoku.h"
 #include "threadpool.h"
-
 using namespace std;
 
-const int puzzle_num = 10240;
+// ios和stdio的同步是否打开
+#define SYNC 0
 
 ThreadPool thread_pool;
+int thread_num = 1;
+char one_puzzle[128];
+const int puzzle_buf_num = 10240;
+int puzzle_buf[puzzle_buf_num][N];
 
-char puzzle[128];
-int thread_num;
-int puzzle_buf[puzzle_num][N];
-
-void init() {
-  ios_base::sync_with_stdio(false);
-  thread_num = thread::hardware_concurrency();
-}
-
+// 解数独
 int solve(int start, int end) {
   for (int i = start; i < end; i++)
     solve_sudoku_dancing_links(puzzle_buf[i]);
   return 0;
 }
 
-void trans(char in[N], int *target) {
-  for (int i = 0; i < N; i++) {
-    target[i] = in[i] - 48;
-  }
-}
-
-void file_handle(string file_name) {
+void file_process(string file_name) {
   ifstream input_file(file_name, ios::in);
-
   vector<future<int>> results;
-  bool end_of_file = false;
-  while (!end_of_file) {
-    // 按块来取数据
-    int line_count = 0;
-    while (line_count < puzzle_num) {
-      if (input_file.eof()) {
-        end_of_file = true;
-        break;
+  while (!input_file.eof()) {
+    // 取数据
+    int line_num = 0;
+    while (!input_file.eof() && line_num < puzzle_buf_num) {
+      input_file.getline(one_puzzle, N + 1);
+      if (strlen(one_puzzle) >= N) {
+        for (int i = 0; i < N; i++)
+          puzzle_buf[line_num][i] = one_puzzle[i] - 48;
+        line_num++;
       }
-      input_file.getline(puzzle, N + 1);
-      if (strlen(puzzle) >= N)
-        trans(puzzle, puzzle_buf[line_count++]);
     };
 
-    // 将数据分块给线程处理
-    int start = 0, len = (line_count + thread_num) / thread_num;
-    for (int i = 0; i < thread_num; i++, start += len) {
-      results.emplace_back(thread_pool.enqueue(
-          solve, start,
-          (start + len >= line_count) ? line_count : start + len));
+    // 分数据
+    int start = 0, end = 0, len = (line_num + thread_num) / thread_num;
+    for (int i = 0; i < thread_num; i++) {
+      end = (start + len >= line_num) ? line_num : start + len;
+      results.emplace_back(thread_pool.enqueue(solve, start, end));
+      start += len;
     }
     for (auto &&result : results)
       result.wait();
 
-    // 输出数据到文件中
-    for (int i = 0; i < line_count; i++) {
+    // 输出数据
+    for (int i = 0; i < line_num; i++) {
       for (int j = 0; j < N; j++)
         putchar('0' + puzzle_buf[i][j]);
       putchar('\n');
@@ -74,10 +61,10 @@ void file_handle(string file_name) {
   input_file.close();
 }
 int main() {
-  init();
+  ios_base::sync_with_stdio(SYNC);
+  thread_num = thread::hardware_concurrency();
   string file_name;
-  while (getline(cin, file_name)) {
-    file_handle(file_name);
-  }
+  while (getline(cin, file_name))
+    file_process(file_name);
   return 0;
 }
