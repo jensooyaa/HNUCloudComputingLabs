@@ -11,7 +11,7 @@
 
 using namespace std;
 
-const int puzzle_num = 1024;
+const int puzzle_num = 10240;
 
 ThreadPool thread_pool;
 
