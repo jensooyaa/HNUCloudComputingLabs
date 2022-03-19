@@ -26,6 +26,14 @@ int solve(int start, int end) {
   return 0;
 }
 
+void print(int line_num) {
+  for (int i = 0; i < line_num; i++) {
+    for (int j = 0; j < N; j++)
+      putchar('0' + puzzle_buf[i][j]);
+    putchar('\n');
+  }
+}
+
 void file_process(string file_name) {
   ifstream input_file(file_name, ios::in);
   vector<future<int>> results;
@@ -52,11 +60,7 @@ void file_process(string file_name) {
       result.wait();
 
     // 输出数据
-    for (int i = 0; i < line_num; i++) {
-      for (int j = 0; j < N; j++)
-        putchar('0' + puzzle_buf[i][j]);
-      putchar('\n');
-    }
+    print(line_num);
   }
   input_file.close();
 }
