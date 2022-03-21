@@ -14,6 +14,8 @@
 class ThreadPool {
 public:
   ThreadPool();
+  void start(int);
+  void close();
   template <class F, class... Args>
   auto enqueue(F &&f, Args &&...args)
       -> std::future<typename std::result_of<F(Args...)>::type>;
@@ -29,7 +31,9 @@ private:
 
 // the constructor just launches some amount of workers
 inline ThreadPool::ThreadPool() : stop(false) {
-  size_t threads = std::thread::hardware_concurrency();
+}
+
+inline void ThreadPool::start(int threads){
   for (size_t i = 0; i < threads; ++i)
     workers.emplace_back([this] {
       for (;;) {
@@ -50,6 +54,9 @@ inline ThreadPool::ThreadPool() : stop(false) {
     });
 }
 
+inline void ThreadPool::close(){
+  stop = true;
+}
 // add new work item to the pool
 template <class F, class... Args>
 auto ThreadPool::enqueue(F &&f, Args &&...args)
@@ -77,8 +84,8 @@ inline ThreadPool::~ThreadPool() {
   {
     std::unique_lock<std::mutex> lock(queue_mutex);
     stop = true;
+    condition.notify_all();
   }
-  condition.notify_all();
   for (std::thread &worker : workers)
     worker.join();
 }
